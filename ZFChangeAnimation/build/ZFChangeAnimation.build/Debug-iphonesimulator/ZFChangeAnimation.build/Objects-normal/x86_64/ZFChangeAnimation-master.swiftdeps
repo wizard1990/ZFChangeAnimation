@@ -1,0 +1,7 @@
+version: "Apple Swift version 2.0 (swiftlang-700.0.59 clang-700.0.72)"
+options: "f67593aae9b376550b8f25b5d7882af2"
+build_time: [504043452, 177674000]
+inputs: 
+	"/Users/yzhang1/Workspace/ZFChangeAnimation/ZFChangeAnimation/ZFChangeAnimation/AppDelegate.swift": [504001957, 0]
+	"/Users/yzhang1/Workspace/ZFChangeAnimation/ZFChangeAnimation/ZFChangeAnimation/ViewController.swift": [504042769, 0]
+	"/Users/yzhang1/Workspace/ZFChangeAnimation/ZFChangeAnimation/ZFChangeAnimation/ChangeAnimationView.swift": [504043449, 0]
