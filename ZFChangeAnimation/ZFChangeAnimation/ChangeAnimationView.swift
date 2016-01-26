@@ -79,7 +79,7 @@ public class ChangeAnimationView: UIView {
             case .step1:
                 animationStep2()
             case .step2:
-                changedLayer.removeFromSuperlayer()
+                break;
             case .step3:
                 break
             case .step4:
@@ -159,13 +159,17 @@ private extension ChangeAnimationView {
 private extension ChangeAnimationView {
 
     func animationStep1() {
+        let strokeEndStartValue: CGFloat = 1
+        let strokeEndToValue: CGFloat = 0.4
+        let pathStartValue: CGFloat = 0.2
+
         let strokeAnimation = CABasicAnimation(keyPath: "strokeEnd")
-        strokeAnimation.fromValue = NSNumber(float: 1)
-        strokeAnimation.toValue = NSNumber(float: 0.4)
+        strokeAnimation.fromValue = NSNumber(float: Float(strokeEndStartValue))
+        strokeAnimation.toValue = NSNumber(float: Float(strokeEndToValue))
 
         let pathAnimation = CABasicAnimation(keyPath: "position.x")
         pathAnimation.fromValue = NSNumber(float: 0)
-        pathAnimation.toValue = NSNumber(float: -10)
+        pathAnimation.toValue = NSNumber(float: Float(-kLineWidth * pathStartValue))
 
         let animationGroup = CAAnimationGroup()
         animationGroup.animations = [strokeAnimation, pathAnimation]
@@ -173,31 +177,34 @@ private extension ChangeAnimationView {
         animationGroup.duration = kStep1Duration
         animationGroup.delegate = self
         animationGroup.setValue(AnimationStep.step1.rawValue, forKey: kAnimationNameKey)
-        changedLayer.strokeEnd = 0.4
-        changedLayer.position.x = -10
+
+        changedLayer.strokeEnd = strokeEndToValue
+        changedLayer.position.x = -kLineWidth * pathStartValue
         changedLayer.addAnimation(animationGroup, forKey: nil)
     }
 
     func animationStep2() {
+        let strokeEndStartValue: CGFloat = 0.4
+        let strokeEndToValue: CGFloat = 0.8
+        let pathStartValue: CGFloat = 0.2
+
         let strokeAnimation = CABasicAnimation(keyPath: "strokeEnd")
-        strokeAnimation.fromValue = NSNumber(float: 0.4)
-        strokeAnimation.toValue = NSNumber(float: 0)
+        strokeAnimation.fromValue = NSNumber(float: Float(strokeEndStartValue))
+        strokeAnimation.toValue = NSNumber(float: Float(strokeEndToValue))
 
-        let translationAnimation = CABasicAnimation(keyPath: "transform.translation.x")
-        translationAnimation.fromValue = NSNumber(float: 0)
-        translationAnimation.toValue = NSNumber(float: Float(1.2 * kLineWidth))
-
-
+        let pathAnimation = CABasicAnimation(keyPath: "position.x")
+        pathAnimation.fromValue = NSNumber(float: Float(-kLineWidth * pathStartValue))
+        pathAnimation.toValue = NSNumber(float: Float(kLineWidth * strokeEndStartValue))
 
         let animationGroup = CAAnimationGroup()
-        animationGroup.animations = [strokeAnimation, translationAnimation]
+        animationGroup.animations = [strokeAnimation, pathAnimation]
         animationGroup.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
         animationGroup.duration = kStep2Duration
         animationGroup.delegate = self
         animationGroup.setValue(AnimationStep.step2.rawValue, forKey: kAnimationNameKey)
 
-        changedLayer.strokeEnd = 0.8
-        changedLayer.setValue(NSNumber(float: -10), forKey: "transform.translation.x")
+        changedLayer.strokeEnd = strokeEndToValue
+        changedLayer.position.x = strokeEndStartValue * kLineWidth
         changedLayer.addAnimation(animationGroup, forKey: nil)
     }
 
