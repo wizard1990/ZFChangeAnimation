@@ -6,17 +6,17 @@ provides-nominal:
 provides-member:
 - ["C17ZFChangeAnimation14ViewController", ""]
 provides-dynamic-lookup:
-- "resumeAnimation"
-- "pasueAnimation"
-- "startAnimation"
 - "viewDidLoad"
 - "didReceiveMemoryWarning"
+- "startAnimation"
+- "resumeAnimation"
+- "pasueAnimation"
 depends-top-level:
-- !private "CGRectMake"
-- "ChangeAnimationView"
-- "UIViewController"
-- "AnyObject"
 - "ViewController"
+- "AnyObject"
+- "UIViewController"
+- "ChangeAnimationView"
+- !private "CGRectMake"
 depends-member:
 - !private ["PSs9AnyObject", "CGRectMake"]
 - !private ["PSs9AnyObject", "ChangeAnimationView"]

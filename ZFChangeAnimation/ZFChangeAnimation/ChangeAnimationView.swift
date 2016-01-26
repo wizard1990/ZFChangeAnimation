@@ -20,8 +20,8 @@ private let kLineWidth: CGFloat = 50
 private let kLineGapHeight: CGFloat = 10
 private let kLineHeight: CGFloat = 8
 
-private let kStep1Duration = 0.5
-private let kStep2Duration = 0.5
+private let kStep1Duration = 2.5
+private let kStep2Duration = 2.5
 private let kStep3Duration = 5.0
 private let kStep4Duration = 5.0
 
@@ -29,6 +29,14 @@ private let kTopY = kRaduis - kLineGapHeight
 private let kCenterY = kRaduis + kLineHeight
 private let kBottomY = kRaduis + kLineGapHeight + 2 * kLineHeight
 private let degreeToRadians: (Int -> Double) = {(M_PI * (Double($0)) / 180.0)}
+
+private let kAnimationNameKey = "kAnimationName"
+private enum AnimationStep: String {
+    case step1 = "kAnimationStep1"
+    case step2 = "kAnimationStep2"
+    case step3 = "kAnimationStep3"
+    case step4 = "kAnimationStep4"
+}
 
 public class ChangeAnimationView: UIView {
 
@@ -64,9 +72,25 @@ public class ChangeAnimationView: UIView {
 
     }
 
+    // override
+    public override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
+        if let step = AnimationStep(rawValue: anim.valueForKey(kAnimationNameKey) as? String ?? "") {
+            switch step {
+            case .step1:
+                animationStep2()
+            case .step2:
+                changedLayer.removeFromSuperlayer()
+            case .step3:
+                break
+            case .step4:
+                break
+            }
+        }
+    }
+
 }
 
-// calculation methods
+// layer methods
 private extension ChangeAnimationView {
 
     // draw top and bottom lines
@@ -114,10 +138,26 @@ private extension ChangeAnimationView {
         shapeLayer.lineCap = kCALineCapRound
     }
 
+    func pauseLayer(layer: CALayer) {
+        layer.speed = 0
+        let pausedTime = layer.convertTime(CACurrentMediaTime(), fromLayer: nil)
+        layer.timeOffset = pausedTime
+    }
+
+    func resumeLayer(layer: CALayer) {
+        let pausedTime = layer.timeOffset
+        layer.speed = 1
+        layer.timeOffset = 0
+        layer.beginTime = 0
+        let timeSincePause = layer.convertTime(CACurrentMediaTime(), fromLayer: nil) - pausedTime
+        layer.beginTime = timeSincePause
+    }
+
 }
 
-// animations
+// animation methods
 private extension ChangeAnimationView {
+
     func animationStep1() {
         let strokeAnimation = CABasicAnimation(keyPath: "strokeEnd")
         strokeAnimation.fromValue = NSNumber(float: 1)
@@ -132,9 +172,33 @@ private extension ChangeAnimationView {
         animationGroup.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseIn)
         animationGroup.duration = kStep1Duration
         animationGroup.delegate = self
-        animationGroup.setValue("animationStep1", forKey: "animationName")
+        animationGroup.setValue(AnimationStep.step1.rawValue, forKey: kAnimationNameKey)
         changedLayer.strokeEnd = 0.4
         changedLayer.position.x = -10
-        changedLayer.addAnimation(animationGroup, forKey: "centerLineShift")
+        changedLayer.addAnimation(animationGroup, forKey: nil)
     }
+
+    func animationStep2() {
+        let strokeAnimation = CABasicAnimation(keyPath: "strokeEnd")
+        strokeAnimation.fromValue = NSNumber(float: 0.4)
+        strokeAnimation.toValue = NSNumber(float: 0)
+
+        let translationAnimation = CABasicAnimation(keyPath: "transform.translation.x")
+        translationAnimation.fromValue = NSNumber(float: 0)
+        translationAnimation.toValue = NSNumber(float: Float(1.2 * kLineWidth))
+
+
+
+        let animationGroup = CAAnimationGroup()
+        animationGroup.animations = [strokeAnimation, translationAnimation]
+        animationGroup.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+        animationGroup.duration = kStep2Duration
+        animationGroup.delegate = self
+        animationGroup.setValue(AnimationStep.step2.rawValue, forKey: kAnimationNameKey)
+
+        changedLayer.strokeEnd = 0.8
+        changedLayer.setValue(NSNumber(float: -10), forKey: "transform.translation.x")
+        changedLayer.addAnimation(animationGroup, forKey: nil)
+    }
+
 }

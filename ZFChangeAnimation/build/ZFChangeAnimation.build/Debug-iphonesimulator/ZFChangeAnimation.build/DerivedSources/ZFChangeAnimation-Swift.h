@@ -109,6 +109,7 @@ SWIFT_CLASS("_TtC17ZFChangeAnimation11AppDelegate")
 @end
 
 @class NSCoder;
+@class CAAnimation;
 
 SWIFT_CLASS("_TtC17ZFChangeAnimation19ChangeAnimationView")
 @interface ChangeAnimationView : UIView
@@ -117,6 +118,7 @@ SWIFT_CLASS("_TtC17ZFChangeAnimation19ChangeAnimationView")
 - (void)startAnimation;
 - (void)resumeAnimation;
 - (void)stopAnimation;
+- (void)animationDidStop:(CAAnimation * __nonnull)anim finished:(BOOL)flag;
 @end
 
 
